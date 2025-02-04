@@ -9,8 +9,13 @@ import (
 func main() {
     router := api.NewRouter()
     
+    loggingRouter := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        log.Printf("%s %s %s", r.RemoteAddr, r.Method, r.URL)
+        router.ServeHTTP(w, r)
+    })
+    
     log.Println("Starting server on :8080")
-    if err := http.ListenAndServe(":8080", router); err != nil {
+    if err := http.ListenAndServe(":8080", loggingRouter); err != nil {
         log.Fatal(err)
     }
 }
