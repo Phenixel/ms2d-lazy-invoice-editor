@@ -6,6 +6,10 @@
 ## Installation du projet
 ```git clone https://github.com/Phenixel/ms2d-lazy-invoice-editor.git```
 
+```git branch Front-end```
+
+```git checkout Front-end```
+
 ```cd ProjectInvoice```
 
 ```composer install```
