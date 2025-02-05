@@ -2,6 +2,24 @@
 # MS2D - Projet Lazy invoice Editor
 [![Version](https://img.shields.io/badge/Version-2.0.0-blue)]()
 
+
+## Installation du projet
+```git clone https://github.com/Phenixel/ms2d-lazy-invoice-editor.git```
+
+```cd ProjectInvoice```
+
+```composer install```
+
+modifier le .env avec vos informations specifiquement ici :
+```DATABASE_URL="mysql://root:root@127.0.0.1:8889/projectInvoice"```
+
+```php bin/console doctrine:database:create```
+
+```php bin/console doctrine:migrations:migrate```
+
+```symfony server:start```
+
+
 ## Description
 Lazy invoice Editor destiné à créer une interface simple permettant à un formateur d'éditer ces factures 
 mensuelles simplement et rapidement.
