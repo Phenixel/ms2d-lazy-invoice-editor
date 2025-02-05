@@ -1,4 +1,4 @@
-package main
+package storage
 
 import (
 	"context"
@@ -8,50 +8,66 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
-func main() {
-	ctx := context.Background()
-	endpoint := "play.min.io"
-	accessKeyID := "Q3AM3UQ867SPQQA43P2F"
-	secretAccessKey := "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"
-	useSSL := true
+type MinioService struct {
+	Client     *minio.Client
+	BucketName string
+}
 
-	// Initialize minio client object.
-	minioClient, err := minio.New(endpoint, &minio.Options{
+func NewMinioService() (*MinioService, error) {
+	ctx := context.Background()
+	endpoint := "localhost:9000"
+	accessKeyID := "minioadmin"
+	secretAccessKey := "minioadmin"
+	useSSL := false
+
+	client, err := minio.New(endpoint, &minio.Options{
 		Creds:  credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),
 		Secure: useSSL,
 	})
 	if err != nil {
-		log.Fatalln(err)
+		return nil, err
 	}
 
-	// Make a new bucket called testbucket.
-	bucketName := "testbucket"
-	location := "us-east-1"
+	ms := &MinioService{
+		Client:     client,
+		BucketName: "invoices",
+	}
 
-	err = minioClient.MakeBucket(ctx, bucketName, minio.MakeBucketOptions{Region: location})
+	// Create bucket if it doesn't exist
+	err = ms.initBucket(ctx)
 	if err != nil {
-		// Check to see if we already own this bucket (which happens if you run this twice)
-		exists, errBucketExists := minioClient.BucketExists(ctx, bucketName)
-		if errBucketExists == nil && exists {
-			log.Printf("We already own %s\n", bucketName)
-		} else {
-			log.Fatalln(err)
+		return nil, err
+	}
+
+	return ms, nil
+}
+
+func (ms *MinioService) initBucket(ctx context.Context) error {
+	exists, err := ms.Client.BucketExists(ctx, ms.BucketName)
+	if err != nil {
+		return err
+	}
+
+	if !exists {
+		err = ms.Client.MakeBucket(ctx, ms.BucketName, minio.MakeBucketOptions{Region: "us-east-1"})
+		if err != nil {
+			return err
 		}
-	} else {
-		log.Printf("Successfully created %s\n", bucketName)
+		log.Printf("Created bucket: %s\n", ms.BucketName)
 	}
 
-	// Upload the test file
-	// Change the value of filePath if the file is in another location
-	objectName := "testdata"
-	filePath := "/tmp/testdata"
-	contentType := "application/octet-stream"
+	return nil
+}
 
-	// Upload the test file with FPutObject
-	info, err := minioClient.FPutObject(ctx, bucketName, objectName, filePath, minio.PutObjectOptions{ContentType: contentType})
+func (ms *MinioService) UploadFile(ctx context.Context, objectName string, filePath string, contentType string) error {
+	info, err := ms.Client.FPutObject(ctx,
+		ms.BucketName,
+		objectName,
+		filePath,
+		minio.PutObjectOptions{ContentType: contentType})
 	if err != nil {
-		log.Fatalln(err)
+		return err
 	}
-
 	log.Printf("Successfully uploaded %s of size %d\n", objectName, info.Size)
+	return nil
 }
