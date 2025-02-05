@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Facture index{% endblock %}
+
+{% block body %}
+    <h1>Facture index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Month</th>
+                <th>Total</th>
+                <th>createdAt</th>
+                <th>updatedAt</th>
+                <th>pdfPath</th>
+                <th>formateur_id</th>
+                <th>invoiceInline</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for facture in factures %}
+            <tr>
+                <td>{{ facture.id }}</td>
+                <td>{{ facture.month|date('Y-m')  }}</td>
+                <td>{{ facture.total }}</td>
+                <td>{{ facture.createdAt|date('Y-m-d H:i:s') }}</td>
+                <td>{{ facture.updatedAt ? facture.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ facture.pdfPath }}</td>
+                <td>{{ facture.formateurId ? facture.formateurId.nom : '' }}</td>
+                {# Pour invoiceInline, si vous souhaitez afficher par exemple le module : #}
+                <td>{{ facture.invoiceInline ? facture.invoiceInline.Module : '' }}</td>
+                <td>
+                    <a href="{{ path('app_facture_show', {'id': facture.id}) }}">show</a>
+                    <a href="{{ path('app_facture_edit', {'id': facture.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_facture_new') }}">Create new</a>
+{% endblock %}
