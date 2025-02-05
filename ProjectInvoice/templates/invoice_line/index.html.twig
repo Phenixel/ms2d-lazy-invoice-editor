@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}InvoiceLine index{% endblock %}
+
+{% block body %}
+    <h1>InvoiceLine index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Module</th>
+                <th>Date</th>
+                <th>Hours</th>
+                <th>Class</th>
+                <th>Prix</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for invoice_line in invoice_lines %}
+            <tr>
+                <td>{{ invoice_line.id }}</td>
+                <td>{{ invoice_line.Module }}</td>
+                <td>{{ invoice_line.date ? invoice_line.date|date('Y-m-d') : '' }}</td>
+                <td>{{ invoice_line.hours }}</td>
+                <td>{{ invoice_line.class }}</td>
+                <td>{{ invoice_line.prix }}</td>
+                <td>
+                    <a href="{{ path('app_invoice_line_show', {'id': invoice_line.id}) }}">show</a>
+                    <a href="{{ path('app_invoice_line_edit', {'id': invoice_line.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_invoice_line_new') }}">Create new</a>
+{% endblock %}
