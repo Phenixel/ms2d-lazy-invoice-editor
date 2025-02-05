@@ -6,8 +6,13 @@ toolchain go1.23.5
 
 require (
 	github.com/gorilla/mux v1.8.1
-	github.com/jung-kurt/gofpdf v1.16.2
 	github.com/minio/minio-go/v7 v7.0.84
+)
+
+require (
+	github.com/boombuler/barcode v1.0.1 // indirect
+	github.com/jung-kurt/gofpdf v1.16.2 // indirect
+	github.com/ruudk/golang-pdf417 v0.0.0-20201230142125-a7e3863a1245 // indirect
 )
 
 require (
@@ -15,6 +20,7 @@ require (
 	github.com/go-ini/ini v1.67.0 // indirect
 	github.com/goccy/go-json v0.10.4 // indirect
 	github.com/google/uuid v1.6.0 // indirect
+	github.com/johnfercher/maroto v1.0.0
 	github.com/klauspost/compress v1.17.11 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.9 // indirect
 	github.com/minio/md5-simd v1.1.2 // indirect
