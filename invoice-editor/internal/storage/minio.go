@@ -1,64 +1,57 @@
-package storage
+package main
 
 import (
-    "bytes"
-    "context"
-    "fmt"
-    "github.com/minio/minio-go/v7"
-    "github.com/minio/minio-go/v7/pkg/credentials"
+	"context"
+	"log"
+
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
-type Storage interface {
-    UploadFile(ctx context.Context, bucketName, objectName string, data []byte) error
-    DownloadFile(ctx context.Context, bucketName, objectName string) ([]byte, error)
-    DeleteFile(ctx context.Context, bucketName, objectName string) error
-}
+func main() {
+	ctx := context.Background()
+	endpoint := "play.min.io"
+	accessKeyID := "Q3AM3UQ867SPQQA43P2F"
+	secretAccessKey := "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG"
+	useSSL := true
 
-type MinioStorage struct {
-    client *minio.Client
-}
+	// Initialize minio client object.
+	minioClient, err := minio.New(endpoint, &minio.Options{
+		Creds:  credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),
+		Secure: useSSL,
+	})
+	if err != nil {
+		log.Fatalln(err)
+	}
 
-func NewMinioStorage(endpoint, accessKeyID, secretAccessKey string, useSSL bool) (*MinioStorage, error) {
-    client, err := minio.New(endpoint, &minio.Options{
-        Creds:  credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),
-        Secure: useSSL,
-    })
-    if err != nil {
-        return nil, fmt.Errorf("failed to create minio client: %w", err)
-    }
-    
-    return &MinioStorage{client: client}, nil
-}
+	// Make a new bucket called testbucket.
+	bucketName := "testbucket"
+	location := "us-east-1"
 
-func (s *MinioStorage) UploadFile(ctx context.Context, bucketName, objectName string, data []byte) error {
-    reader := bytes.NewReader(data)
-    _, err := s.client.PutObject(ctx, bucketName, objectName, reader, int64(len(data)), minio.PutObjectOptions{
-        ContentType: "application/pdf",
-    })
-    if err != nil {
-        return fmt.Errorf("failed to upload file: %w", err)
-    }
-    return nil
-}
+	err = minioClient.MakeBucket(ctx, bucketName, minio.MakeBucketOptions{Region: location})
+	if err != nil {
+		// Check to see if we already own this bucket (which happens if you run this twice)
+		exists, errBucketExists := minioClient.BucketExists(ctx, bucketName)
+		if errBucketExists == nil && exists {
+			log.Printf("We already own %s\n", bucketName)
+		} else {
+			log.Fatalln(err)
+		}
+	} else {
+		log.Printf("Successfully created %s\n", bucketName)
+	}
 
-func (s *MinioStorage) DownloadFile(ctx context.Context, bucketName, objectName string) ([]byte, error) {
-    obj, err := s.client.GetObject(ctx, bucketName, objectName, minio.GetObjectOptions{})
-    if err != nil {
-        return nil, fmt.Errorf("failed to get object: %w", err)
-    }
-    
-    buf := new(bytes.Buffer)
-    if _, err := buf.ReadFrom(obj); err != nil {
-        return nil, fmt.Errorf("failed to read object: %w", err)
-    }
-    
-    return buf.Bytes(), nil
-}
+	// Upload the test file
+	// Change the value of filePath if the file is in another location
+	objectName := "testdata"
+	filePath := "/tmp/testdata"
+	contentType := "application/octet-stream"
 
-func (s *MinioStorage) DeleteFile(ctx context.Context, bucketName, objectName string) error {
-    err := s.client.RemoveObject(ctx, bucketName, objectName, minio.RemoveObjectOptions{})
-    if err != nil {
-        return fmt.Errorf("failed to delete object: %w", err)
-    }
-    return nil
+	// Upload the test file with FPutObject
+	info, err := minioClient.FPutObject(ctx, bucketName, objectName, filePath, minio.PutObjectOptions{ContentType: contentType})
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	log.Printf("Successfully uploaded %s of size %d\n", objectName, info.Size)
 }
