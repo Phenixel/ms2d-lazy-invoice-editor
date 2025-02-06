@@ -3,36 +3,46 @@
 {% block title %}Entreprise{% endblock %}
 
 {% block body %}
-    <h1>Entreprise</h1>
+    <div class="container mt-5">
+        <h1 class="mb-4">Entreprise</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ entreprise.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ entreprise.nom }}</td>
-            </tr>
-            <tr>
-                <th>Mail</th>
-                <td>{{ entreprise.mail }}</td>
-            </tr>
-            <tr>
-                <th>AdressePostal</th>
-                <td>{{ entreprise.adressePostal }}</td>
-            </tr>
-            <tr>
-                <th>Codepostal</th>
-                <td>{{ entreprise.codepostal }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <th>Id</th>
+                            <td>{{ entreprise.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Nom</th>
+                            <td>{{ entreprise.nom }}</td>
+                        </tr>
+                        <tr>
+                            <th>Mail</th>
+                            <td>{{ entreprise.mail }}</td>
+                        </tr>
+                        <tr>
+                            <th>Adresse Postal</th>
+                            <td>{{ entreprise.adressePostal }}</td>
+                        </tr>
+                        <tr>
+                            <th>Code Postal</th>
+                            <td>{{ entreprise.codepostal }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-    <a href="{{ path('app_entreprise_index') }}">back to list</a>
+   {#  <div class="mt-4">
+            <a href="{{ path('app_entreprise_index') }}" class="btn btn-secondary">Back to list</a>
+            <a href="{{ path('app_entreprise_edit', {'id': entreprise.id}) }}" class="btn btn-primary">Edit</a>
+        </div> 
+        #} 
 
-    <a href="{{ path('app_entreprise_edit', {'id': entreprise.id}) }}">edit</a>
-
-    {{ include('entreprise/_delete_form.html.twig') }}
+        <div class="mt-3">
+            {{ include('entreprise/_delete_form.html.twig') }}
+        </div>
+    </div>
 {% endblock %}

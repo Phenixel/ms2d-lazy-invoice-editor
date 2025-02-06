@@ -3,11 +3,24 @@
 {% block title %}Edit Facture{% endblock %}
 
 {% block body %}
-    <h1>Edit Facture</h1>
+    <div class="container mt-5">
+        <h1 class="mb-4 text-primary">Edit Facture</h1>
 
-    {{ include('facture/_form.html.twig', {'button_label': 'Update'}) }}
+        <div class="card shadow-sm p-4">
+            <div class="card-body">
+                <!-- Formulaire de modification de la facture -->
+                {{ include('facture/_form.html.twig', {'button_label': 'Update'}) }}
+            </div>
+        </div>
 
-    <a href="{{ path('app_facture_index') }}">back to list</a>
+        <div class="d-flex justify-content-between mt-4">
+            <!-- Lien vers la liste des factures -->
+            <a href="{{ path('app_facture_index') }}" class="btn btn-secondary">Back to list</a>
 
-    {{ include('facture/_delete_form.html.twig') }}
+            <!-- Formulaire de suppression -->
+            <div>
+                {{ include('facture/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

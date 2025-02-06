@@ -7,12 +7,9 @@ use App\Entity\Formateur;
 use App\Entity\InvoiceLine;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
 
 class FactureType extends AbstractType
 {
@@ -21,43 +18,69 @@ class FactureType extends AbstractType
         $builder
             ->add('month', DateTimeType::class, [
                 'widget' => 'single_text',
+                'attr' => [
+                    'class' => 'form-control', 
+                ],
+                'label_attr' => [
+                    'class' => 'form-label fw-bold'
+                ],
+                'label' => 'Mois'
             ])
-
             ->add('createdAt', DateTimeType::class, [
                 'widget' => 'single_text',
+                'attr' => [
+                    'class' => 'form-control',
+                ],
+                'label_attr' => [
+                    'class' => 'form-label fw-bold'
+                ],
+                'label' => 'Créé le'
             ])
-            // Pour 'updatedAt' (nullable), on utilise DateTimeType avec 'required' => false
             ->add('updatedAt', DateTimeType::class, [
                 'widget' => 'single_text',
                 'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                ],
+                'label_attr' => [
+                    'class' => 'form-label fw-bold'
+                ],
+                'label' => 'Mis à jour le'
             ])
-            ->add('pdfPath')
-           // ->add('total')
-           ->add('formateur_id', EntityType::class, [
-               'class' => Formateur::class,
-               'choice_label' => 'nom', // Affiche le nom du formateur au lieu de l'id
-           ])
-
-//            ->add('invoiceInline', EntityType::class, [
-//                'class' => InvoiceLine::class,
-//                'choice_label' => 'Module', // Affiche le nom du formateur au lieu de l'id
-//            ])
-//            ->add('invoiceInline', CollectionType::class, [
-//                'entry_type'    => \App\Form\InvoiceLineType::class,
-//                'allow_add'     => true,
-//                'allow_delete'  => true,
-//                'by_reference'  => false,
-//            ])
-
-
+            ->add('pdfPath', null, [
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Chemin du fichier PDF'
+                ],
+                'label_attr' => [
+                    'class' => 'form-label fw-bold'
+                ],
+                'label' => 'Chemin du PDF'
+            ])
+            ->add('formateur_id', EntityType::class, [
+                'class' => Formateur::class,
+                'choice_label' => 'nom',
+                'attr' => [
+                    'class' => 'form-select'
+                ],
+                'label_attr' => [
+                    'class' => 'form-label fw-bold'
+                ],
+                'label' => 'Formateur'
+            ])
             ->add('invoiceInline', EntityType::class, [
                 'class' => InvoiceLine::class,
                 'choice_label' => 'Module',
-                // On ne permet qu'une sélection (pas de multiple)
-                'multiple'    => false,
-                'expanded'    => false, // liste déroulante
-            ])
-        ;
+                'multiple' => false,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select'
+                ],
+                'label_attr' => [
+                    'class' => 'form-label fw-bold'
+                ],
+                'label' => 'Ligne de Facture (Module)'
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

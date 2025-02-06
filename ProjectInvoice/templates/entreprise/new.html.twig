@@ -1,11 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Entreprise{% endblock %}
+{% block title %}Create New Entreprise{% endblock %}
 
 {% block body %}
-    <h1>Create new Entreprise</h1>
+    <div class="container mt-5">
+        <h1 class="mb-4">Creer une Entreprise</h1>
 
-    {{ include('entreprise/_form.html.twig') }}
+        <div class="card p-4">
+            <div class="card-body">
+                {{ include('entreprise/_form.html.twig') }}
+            </div>
+        </div>
 
-    <a href="{{ path('app_entreprise_index') }}">back to list</a>
+        <div class="mt-4">
+            <a href="{{ path('app_entreprise_index') }}" class="btn btn-secondary">Back to list</a>
+        </div>
+    </div>
 {% endblock %}

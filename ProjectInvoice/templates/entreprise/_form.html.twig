@@ -1,4 +1,29 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Formulaire</h4>
+        </div>
+        <div class="card-body">
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
+            <div class="row">
+                {% for field in form %}
+                    <div class="col-md-6 mb-3">
+                        {{ form_label(field, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(field, {'attr': {'class': 'text-danger'}}) }}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="btn btn-success">
+                {{ button_label|default('Save') }}
+            </button>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+
